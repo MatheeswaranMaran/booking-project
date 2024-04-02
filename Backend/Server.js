@@ -5,11 +5,6 @@ const app = express();
 const Routes = require('./routes/routes');
 const cors = require('cors');
 
-
-// app.get('/', (req, res) => {
-//     res.send("Hello World");
-// })
-
 app.use(cors());
 app.use(express.json());
 

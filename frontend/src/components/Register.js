@@ -10,15 +10,22 @@ function Register() {
     const [pwd,setPwd]= useState();
     const navigate = useNavigate();
 
-    const handleSubmit=(e)=>{
+    const handleSubmit=()=>{
         const newData = {
             username:name,dept:dept,empid:sid,mobno:mobno,password:pwd}
             console.log(newData);
-            axios.post("http://localhost:4000/register",newData);
+            axios.post("http://localhost:4000/register",newData)
+            .then((res)=>{
+                if(res.data==="empid exists"){
+                    alert("Check your Employee ID properly");
+                }
+            });
     }
+
     function navLogin(){
         navigate('/');
     }
+
   return (
     <div className='flex border-2 focus: outline-none font-serif border-white justify-center items-center bg-[url("D:\Maddy\MERN\frontend\background\background.jpg")]  bg-no-repeat bg-center h-screen  '>
         

@@ -13,7 +13,10 @@ function Login() {
     
     axios.post("http://localhost:4000/login",loginData)
     .then((res)=>{
-      if(res.status===200){
+      if(!res.data){
+        alert("Login Failed");
+      }
+      else{
         alert("Successfully logged in!!!");
         navigate('/home');
       }
@@ -26,7 +29,7 @@ function Login() {
     navigate('/register');
   }
   return (
-    <div className='h-screen flex justify-center items-center bg-[url("D:\Maddy\MERN\frontend\background\background.jpg")] bg-no-repeat bg-contain bg-center'>
+    <div className='h-screen flex justify-center items-center bg-[url("D:\Maddy\MERN\frontend\background\background.jpg")] bg-no-repeat bg-center'>
         
         <form className='p-6 border-2 border-white flex flex-col items-center w-80 bg-opacity-80 font-serif rounded-3xl bg-blue-800' onSubmit={handleSubmit}>
         <p className='font-serif text-bold text-white text-3xl pb-8'>Login</p>
