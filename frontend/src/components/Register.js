@@ -10,7 +10,7 @@ function Register() {
     const [pwd,setPwd]= useState();
     const navigate = useNavigate();
 
-    const handleSubmit=()=>{
+    const handleSubmit=(e)=>{
         const newData = {
             username:name,dept:dept,empid:sid,mobno:mobno,password:pwd}
             console.log(newData);
@@ -18,6 +18,7 @@ function Register() {
             .then((res)=>{
                 if(res.data==="empid exists"){
                     alert("Check your Employee ID properly");
+                    e.preventDefault();
                 }
             });
     }

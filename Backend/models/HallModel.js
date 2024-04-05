@@ -12,35 +12,43 @@ const HallSchema = new Schema({
     },
     slots:[
         {
-            slot1:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot2:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot3:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot4:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot5:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot6:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot7:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         },
         {
-            slot8:{type:Boolean},
+            slot:{type:Boolean},
+            name:{type:String},
             sid:{type:String}
         }
     ]

@@ -14,7 +14,6 @@ const registerUser = async(req,res) =>{
         else{
             res.status(200).json("empid exists");
         }
-
     }
     catch(e){
         res.status(400).json({error:e.message});
@@ -33,6 +32,27 @@ const loginUser = async(req,res) =>{
     }
 }
 
+const searchUser = async(req,res) => {
+    const {empid} = req.body
+    try{
+        const search = await regmodel.findOne({empid});
+        res.status(200).json(search);
+    }
+    catch(e){
+        res.status(400).json({Error:"No Employee Found with this EmpID!"});
+    }
+}
+
+const getData = async(req,res)=>{
+    try{
+         const data = await hallmodel.find();
+         res.status(200).json(data);
+    }
+    catch(e){
+        res.status(400).json({Error: e.message});
+    }
+}
 
 
-module.exports = { registerUser,loginUser };
+
+module.exports = { registerUser,loginUser,searchUser, getData };
