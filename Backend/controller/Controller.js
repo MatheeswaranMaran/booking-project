@@ -53,6 +53,17 @@ const getData = async(req,res)=>{
     }
 }
 
+const updateHallStatus = async(req,res)=>{
+    const {id} = req.params;
+    try{
+        const hall = await hallmodel.findByIdAndUpdate({_id:id},{...req.body});
+        res.status(200).json(hall);
+    }
+    catch(e){
+        res.status(400).json({Error:e.message});
+    }
+}
 
 
-module.exports = { registerUser,loginUser,searchUser, getData };
+
+module.exports = { registerUser,loginUser,searchUser, getData, updateHallStatus };

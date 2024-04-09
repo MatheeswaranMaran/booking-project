@@ -19,6 +19,8 @@ function Login() {
       else{
         alert("Successfully logged in!!!");
         navigate('/home');
+        localStorage.setItem("login",true);
+        localStorage.setItem("user",sid);
       }
     });
   }

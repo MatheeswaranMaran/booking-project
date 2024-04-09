@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const HallSchema = new Schema({
-    hall:{
+    day:{
         type:String,
     },
-    date:{
+    hname:{
         type:String,
         required:true
     },
