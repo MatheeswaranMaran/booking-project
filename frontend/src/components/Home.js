@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
 
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Home() {
 
@@ -21,14 +21,17 @@ function Home() {
 
   const [gotSID, setGOTSID] = useState();
 
-  const [drop,setDrop] = useState();
+  const [drop,setDrop] = useState(false);
 
-  
+  const [regdata,setRD] = useState([]);
+
+  const [loading,setLoading] = useState();
 
   const loginCheck=()=>{
     const login = localStorage.getItem("login");
+    console.log(login);
     
-    if(login){
+    if(login==="true"){
       return true;
     }
     else {
@@ -50,22 +53,42 @@ function Home() {
     array.push(a.toString().split(" ")[2]+" "+a.toString().split(" ")[1]);
   }
 
-  const handleToggle=(id,booked,hallid,slotno)=>{
+  const logOut=()=>{
+    localStorage.setItem("login",false);
+    localStorage.setItem("user","");
+    window.location.reload();
+  }
+
+
+  const handleToggle=async(id,booked,hallid,slotno)=>{
     
     if(booked){
       if(loginCheck()){
-        alert("This hall is being booked!!! Please wait until confirmation arrives.");
+        try{
+          setLoading(true);
+          alert("This hall is being booked!!! Please wait until confirmation arrives.");
         const updateData = data.filter((hall,i)=> hall._id === hallid);
 
         updateData[0].slots[slotno].slot = !updateData[0].slots[slotno].slot;
         updateData[0].slots[slotno].sid = gotSID;
 
-        console.log(updateData[0]);
         axios.put(`http://localhost:4000/update/${hallid}`,updateData[0]);
+
+        const bh = updateData[0].hname;
+        const bs = updateData[0].slots[slotno].name;
+        const bd = updateData[0].day;
+        
+        const update = {hname:bh,slot:bs,day:bd,slotno:slotno};
+        axios.put(`http://localhost:4000/updateuser/${regdata._id}`,update);
+        }
+        catch(e){alert(e);}
+        finally{
+          setLoading(false);
+        }
       }
       else{
         alert("Please Login First !!!");
-        navigate("/login");
+        navigate("/");
       }
     }
 
@@ -77,48 +100,59 @@ function Home() {
         alert(`This hall is booked by ${bookingdata.username} Mobile Number: ${bookingdata.mobno} `);
     }
   }
-
-  const getHallData=()=>{
+  const getData=()=>{
     
-    try{
-
-      axios.get("http://localhost:4000/").then((res)=>{
-        setAh(res.data);
-      });
+      axios.get("http://localhost:4000/").then((res)=>{setAh(res.data);});
       const user = localStorage.getItem("user");
       if(!user){
         setLoginAuth(false)
       }
       else{
         setLoginAuth(true);
-        setGOTSID(user);
+        try{
+        setLoading(true);
+        const sid = {empid:user};
+        console.log();
+        axios.post("http://localhost:4000/search",sid).then((res)=>{setRD(res.data);});
+        console.log(regdata);
+        }catch(e){}
+        finally{
+          setLoading(false);
+        }
       }
-    }
-    catch(e){
-      console.log(e);
-    }
   }
 
-  useEffect(()=>{getHallData()},[]);
+  useEffect(()=>{getData()},[]);
+
 
   const dropDown=()=>{
     setDrop(!drop);
   }
 
+  const multipleSlotBooking=()=>{
+    navigate("/multipleslotbooking");
+  }
+  
+  const logIn=()=>{
+    navigate("/");
+  }
+  
   return (
     <div className="bg-[url('D:\Maddy\MERN\frontend\background\background.jpg')]  bg-no-repeat bg-cover bg-center h-screen w-screen flex flex-col items-center ">
-    
-     <div className='border-2 border-white relative  bg-blue-800 bg-opacity-80 flex flex-col items-center font-serif rounded-3xl p-6'>
+    {loading && <p>Loading...</p>}
+    {!loading && 
+     <div className='border-2 border-white relative  bg-[#114B5F] bg-opacity-80 flex flex-col items-center w-screen font-serif rounded-3xl p-6'>
      <div className="">
      <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-            <p class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white font-serif">HallGenie</p>            
-            {loginAuth===false?<button className="text-white right-1 border-2 border-white">Login</button>:<button className={`${drop===false ?"text-white border-2 border-white":"text-blue-800 bg-white"}  absolute right-5  p-2`}   onClick={dropDown}>{gotSID}</button>}
+            <p class="self-center text-3xl font-semibold whitespace-nowrap text-white font-serif">HallGenie</p>            
+            {loginAuth===false?<button className="text-white border-2 border-white absolute right-5  p-2" onClick={logIn}>Login</button>:<button className={`${drop===false ?"text-white border-2 border-white":"text-[#1A936F] bg-white"}  absolute right-5  p-2`}   onClick={dropDown}>{localStorage.getItem("user")}</button>}
+            
       </div>
       <div classname="absolute">
       {drop && <div className="absolute right-5 ">
-        <div className="bg-white flex flex-col p-[17.3px] ">
-              <span className="mb-4 w-full"><button className="">Profile</button></span>
-              <span><button>Logout</button></span>
+        <div className="bg-white flex flex-col p-[17.3px] text-blue-800 font-serif ">
+              <span className="mb-4 w-full text-[#1A936F]"><Link to={{pathname:'/profile',state:{regdata}}}>Profile</Link></span>
+              <span><button className="text-[#1A936F]" onClick={logOut}>Logout</button></span>
               </div>
       </div>}
       </div>
@@ -128,11 +162,12 @@ function Home() {
       {
         array.map((date)=>{
           return <div className="m-1">
-            <button className={`h-12 w-12 border-2  ${show===date?"bg-white text-blue-800 font-bold h-16 w-14":" border-white text-white"}`} onClick={()=>{handleShow(date)}} >{date}</button>
+            <button className={`h-12 w-12 border-2  ${show===date?"bg-[#F3E9D2] text-[#114B5F] font-bold h-16 w-14":" border-[#F3E9D2] text-[#F3E9D2]"}`} onClick={()=>{handleShow(date)}} >{date}</button>
           </div>
         })
       }
       </div>
+      <button onClick={multipleSlotBooking} className="mb-4 border-2 border-white text-white p-2">For Multiple Slot Booking</button>
       <h1 className="text-center mb-6 text-white text-3xl">Available Halls</h1>
       <div className="border-2 pr-2 border-[#C5CBE3]">
           {
@@ -143,7 +178,7 @@ function Home() {
                   {
                     hall.slots.map((s,i)=>{
                       return <div>
-                        <button className={`${s.slot ? "text-green-400 border-2 border-green-400 m-2" : "text-[#C5CBE3] border-2 border-[#C5CBE3] m-2"}`}
+                        <button className={`${s.slot ? "text-[#88d498] border-2 border-[#88d499] mr-1 mb-1 mt-1" : "text-[#F3E9D2] border-2 border-[#F3E9D2] mr-1 mb-1 mt-1"} font-mono pl-1 pr-1 font-semibold w-[125px] flex-wrap`}
                         onClick={()=>handleToggle(s.sid,s.slot,hall._id,i)}>
                           {s.name}</button>
                       </div>
@@ -154,9 +189,10 @@ function Home() {
             })
           }
       </div>
-    </div>
+    </div>}
     </div>
   );
+
 }
 
 export default Home

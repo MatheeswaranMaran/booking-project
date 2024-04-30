@@ -20,10 +20,20 @@ const RegSchema = new Schema(
             type:Number,
             require:true
         },
+        email:{
+            type:String,
+            require:true
+        },
         password:{
             type:String,
             require:true
-        }
+        },
+        booking:[{
+            hname:{type:String},
+            slot:{type:String},
+            day:{type:String},
+            slotno:{type:Number}
+        }]
     }
 );
 module.exports = mongoose.model("Register",RegSchema);

@@ -8,11 +8,12 @@ function Register() {
     const [dept,setDept]= useState();
     const [mobno,setMobNo]= useState();
     const [pwd,setPwd]= useState();
+    const [email,setEmail]=useState();
     const navigate = useNavigate();
 
     const handleSubmit=(e)=>{
         const newData = {
-            username:name,dept:dept,empid:sid,mobno:mobno,password:pwd}
+            username:name,dept:dept,empid:sid,mobno:mobno,email:email,password:pwd}
             console.log(newData);
             axios.post("http://localhost:4000/register",newData)
             .then((res)=>{
@@ -76,6 +77,14 @@ function Register() {
                 required
             />
             <input 
+                type="text"
+                placeholder="Email"
+                className='m-2 border-b-2 border-white bg-transparent text-white placeholder-white'
+                value={email} 
+                onChange={(e)=>setEmail(e.target.value)}
+                required  
+            />
+            <input 
                 type="text" 
                 placeholder="Password"
                 className='m-2 border-b-2 border-white bg-transparent text-white placeholder-white'
@@ -83,6 +92,7 @@ function Register() {
                 onChange={(e)=>setPwd(e.target.value)}
                 required  
                 />
+            
             <button 
                 type="submit"
                 className='m-2 p-2 border-2 border-white bg-white rounded-2xl w-28 '
